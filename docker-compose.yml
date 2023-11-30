@@ -12,8 +12,16 @@ services:
       - pgdata:/var/lib/postgresql/data
     restart: on-failure
     ports:
-      - "5432:5432"
-
+      - "9080:5432"
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      GIN_MODE: release
+    restart: on-failure
+    ports:
+      - "8080:8080"
 
 volumes:
   pgdata:
