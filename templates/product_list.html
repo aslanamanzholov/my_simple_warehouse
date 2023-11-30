@@ -1,0 +1,52 @@
+<!--product_list.html-->
+
+{{ template "header.html" .}}
+
+<div class="container mt-5">
+    <h1>Мой склад</h1>
+
+    <div class="d-flex justify-content-between">
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createModal">Добавить</button>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Наименование товара</th>
+                <th scope="col">Описание</th>
+                <th scope="col">Количество</th>
+                <th scope="col">Цена продажи</th>
+                <th scope="col">Цена покупки</th>
+                <th scope="col">Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range .payload }}
+                <tr>
+                    <td>{{ .Name }}</td>
+                    <td>{{ .Description }}</td>
+                    <td>{{ .Amount }}</td>
+                    <td id="currentPrice">{{ .CurrentPrice }} тг.</td>
+                    <td id="costPrice">{{ .CostPrice }} тг.</td>
+                    <td>
+                        <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#myModal"
+                                data-id="{{ .ID }}">Изменить
+                        </button>
+                        <button type="button" class="btn btn-danger" data-toggle="modal"
+                                data-target="#deleteConfirmationModal"
+                                data-id="{{ .ID }}">Удалить
+                        </button>
+                    </td>
+                </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{{ template "add_product.html" .}}
+{{ template "update_product.html" .}}
+{{ template "delete_product.html" .}}
+
+<!--Embed the footer.html template at this location-->
+{{ template "footer.html" .}}

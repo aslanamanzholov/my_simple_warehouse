@@ -1,0 +1,84 @@
+<!--add_product.html-->
+
+<!-- Модальное окно для изменения данных -->
+<div class="modal" id="createModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Заголовок модального окна -->
+      <div class="modal-header">
+        <h4 class="modal-title">Создать продукт</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Основное содержание модального окна -->
+      <div class="modal-body">
+        <!-- Здесь разместите форму для изменения данных -->
+        <form id="createProductForm">
+          <div class="form-group">
+            <label for="name">Наименование товара:</label>
+            <input type="text" class="form-control" id="create_name">
+          </div>
+          <div class="form-group">
+            <label for="description">Описание:</label>
+            <input type="text" class="form-control" id="create_description">
+          </div>
+          <div class="form-group">
+            <label for="amount">Количество:</label>
+            <input type="number" class="form-control" id="create_amount">
+          </div>
+          <div class="form-group">
+            <label for="sellingPrice">Цена продажи:</label>
+            <input type="number" class="form-control" id="create_sellingPrice">
+          </div>
+          <div class="form-group">
+            <label for="buyingPrice">Цена покупки:</label>
+            <input type="number" class="form-control" id="create_buyingPrice">
+          </div>
+          <button type="submit" class="btn btn-primary">Создать продукт</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // Обработчик события отправки формы изменения данных
+  $('#createProductForm').submit(function (event) {
+    event.preventDefault();
+    // Получите значения из полей формы
+    let name = $('#create_name').val();
+    let description = $('#create_description').val();
+    let amount = parseInt($('#create_amount').val(), 10);
+    let sellingPrice = parseInt($('#create_sellingPrice').val(), 10);
+    let buyingPrice = parseInt($('#create_buyingPrice').val(), 10);
+
+    let jsonData = {
+      name: name,
+      description: description,
+      amount: amount,
+      current_price: sellingPrice,
+      cost_price: buyingPrice
+    };
+
+    // Отправьте данные на сервер с использованием AJAX
+    $.ajax({
+      url: '/products/',
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(jsonData),
+      success: function (response) {
+        console.log('Продукт успешно создан:', response);
+        window.$('#createModal').modal('hide');
+        location.reload(true);
+      },
+      error: function (error) {
+        console.error('Ошибка при обновлении данных:', error);
+      }
+    });
+  });
+</script>
+
+<!--Embed the footer.html template at this location-->
+{{ template "footer.html" .}}

@@ -1,0 +1,111 @@
+<!--update_product.html-->
+
+<!-- Модальное окно для изменения данных -->
+<div class="modal" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Заголовок модального окна -->
+      <div class="modal-header">
+        <h4 class="modal-title">Изменить данные</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Основное содержание модального окна -->
+      <div class="modal-body">
+        <!-- Здесь разместите форму для изменения данных -->
+        <form id="editForm">
+          <div class="form-group">
+            <label for="name">Наименование товара:</label>
+            <input type="text" class="form-control" id="name">
+          </div>
+          <div class="form-group">
+            <label for="description">Описание:</label>
+            <input type="text" class="form-control" id="description">
+          </div>
+          <div class="form-group">
+            <label for="amount">Количество:</label>
+            <input type="number" class="form-control" id="amount">
+          </div>
+          <div class="form-group">
+            <label for="sellingPrice">Цена продажи:</label>
+            <input type="number" class="form-control" id="sellingPrice">
+          </div>
+          <div class="form-group">
+            <label for="buyingPrice">Цена покупки:</label>
+            <input type="number" class="form-control" id="buyingPrice">
+          </div>
+          <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // Обработчик события открытия модального окна
+  $('#myModal').on('show.bs.modal', function (event) {
+    let button = $(event.relatedTarget); // Кнопка, которая открыла модальное окно
+    let id = button.data('id'); // Извлекаем значение id из data-id атрибута кнопки
+
+    $(this).data('id', id);
+    // AJAX-запрос к серверу для получения данных о товаре по productId
+    $.ajax({
+      url: '/products/' + id, // Замените на ваш адрес API для получения данных
+      method: 'GET',
+      success: function (data) {
+        // Заполняем поля формы данными из базы данных
+        $('#name').val(data.name);
+        $('#description').val(data.description);
+        $('#amount').val(data.amount);
+        $('#sellingPrice').val(data.current_price);
+        $('#buyingPrice').val(data.cost_price);
+      },
+      error: function (error) {
+        console.error('Ошибка при получении данных:', error);
+      }
+    });
+  });
+
+  // Обработчик события отправки формы изменения данных
+  $('#editForm').submit(function (event) {
+    event.preventDefault();
+    // Получите значения из полей формы
+    let id = $('#myModal').data('id');
+    let name = $('#name').val();
+    let description = $('#description').val();
+    let amount = parseInt($('#amount').val(), 10);
+    let sellingPrice = parseInt($('#sellingPrice').val(), 10);
+    let buyingPrice = parseInt($('#buyingPrice').val(), 10);
+
+    let jsonData = {
+      name: name,
+      description: description,
+      amount: amount,
+      current_price: sellingPrice,
+      cost_price: buyingPrice
+    };
+
+    // Отправьте данные на сервер с использованием AJAX
+    $.ajax({
+      url: '/products/' + id,
+      method: 'PUT',
+      contentType: 'application/json',
+      data: JSON.stringify(jsonData),
+      success: function (response) {
+        console.log('Данные успешно обновлены:', response);
+        // Закройте модальное окно после успешного сохранения
+        window.$('#myModal').modal('hide');
+        location.reload(true);
+      },
+      error: function (error) {
+        console.error('Ошибка при обновлении данных:', error);
+        // Здесь можно обработать ошибку, например, показать сообщение пользователю
+      }
+    });
+  });
+</script>
+
+<!--Embed the footer.html template at this location-->
+{{ template "footer.html" .}}

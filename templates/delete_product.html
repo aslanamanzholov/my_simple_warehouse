@@ -1,0 +1,51 @@
+<!--update_product.html-->
+
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmationModalLabel">Подтверждение удаления</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        Вы уверены, что хотите удалить элемент?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+        <button type="submit" class="btn btn-danger" id="confirmDelete">Удалить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $('#deleteConfirmationModal').on('show.bs.modal', function (event) {
+    let button = $(event.relatedTarget); // Кнопка, которая открыла модальное окно
+    let id = button.data('id'); // Извлекаем значение id из data-id атрибута кнопки
+    $(this).data('id', id);
+  });
+
+  // Обработчик события отправки формы изменения данных
+  $('#confirmDelete').on("click", function(event) {
+    event.preventDefault();
+    // Получите значения из полей формы
+    let id = $('#deleteConfirmationModal').data('id');
+
+    // Отправьте данные на сервер с использованием AJAX
+    $.ajax({
+      url: '/products/' + id,
+      method: 'DELETE',
+      success: function (response) {
+        console.log('Данные успешно обновлены:', response);
+        window.$('#deleteConfirmationModal').modal('hide');
+        location.reload(true);
+      },
+      error: function (error) {
+        console.error('Ошибка при обновлении данных:', error);
+      }
+    });
+  });
+</script>
+
+<!--Embed the footer.html template at this location-->
+{{ template "footer.html" .}}

@@ -1,0 +1,19 @@
+version: '3.7'
+services:
+  db:
+    image: postgres:15-alpine
+    env_file:
+      - ./pkg/common/envs/.env
+    environment:
+        - POSTGRES_DB=my_warehouse_db
+        - POSTGRES_USER=aslan
+        - POSTGRES_PASSWORD=povt203
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: on-failure
+    ports:
+      - "5432:5432"
+
+
+volumes:
+  pgdata:
