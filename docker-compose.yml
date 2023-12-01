@@ -22,6 +22,8 @@ services:
     environment:
       GIN_MODE: release
     restart: on-failure
+    depends_on:
+      - db
     ports:
       - "8090:8090"
     networks:
