@@ -13,6 +13,8 @@ services:
     restart: on-failure
     ports:
       - "9080:5432"
+    networks:
+      - my-network
   web:
     build:
       context: .
@@ -22,6 +24,10 @@ services:
     restart: on-failure
     ports:
       - "8090:8090"
+    networks:
+      - my-network
 
 volumes:
   pgdata:
+networks:
+  my-network:

@@ -15,6 +15,6 @@ COPY . .
 RUN go build -o main cmd/main.go
 
 # Указание порта, который будет прослушиваться приложением
-EXPOSE 8080
+EXPOSE 8090
 
 CMD ["./main"]
